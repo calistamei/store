@@ -1,100 +1,75 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String, Float
-import os
-import psycopg2
+from flask_migrate import Migrate
 
 app = Flask(__name__)
-basedir = os.path.abspath(os.path.dirname(__file__))
-# app.config['SQLALCHEMY_DATABASE_URI'] == 'postgresql://postgres:password@localhost/MakeupStore'
-# app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-# app.secret_key = 'secret string'
+CORS(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhost:5433/MakeupStore'
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# db = SQLAlchemy(app)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
-def get_db_connection():
-    conn = psycopg2.connect(
-            host="localhost",
-            database="MakeupStore",
-            user="postgres",
-            port=5433,
-            password="password")
-    return conn
+class ProductsModel(db.Model):
+    __tablename__ = "products"
+
+    id = db.Column(db.Integer, primary_key=True)
+    categoryid = db.Column(db.ForeignKey("categories.id"))
+    productname = db.Column(db.String(50))
+    description = db.Column(db.String(200))
+    brandid = db.Column(db.Integer)
+    price = db.Column(db.Integer)
+    imageurl = db.Column(db.String)
+
+class CategoriesModel(db.Model):
+    __tablename__ = "categories"
+
+    id = db.Column(db.Integer, primary_key=True)
+    categoryname = db.Column(db.String(50))
 
 @app.route('/getallproducts')
 def getAllProducts():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM Products")
-    products = cur.fetchall()
-    cur.close()
-    conn.close()
-    allProducts = []
-    for product in products:
-        results = {"Id": product[0],
-         "CategoryId": product[1],
-         "ProductName": product[2],
-         "Description": product[3],
-         "BrandId": product[4],
-         "Price": product[5],
-         "ImageURL": product[6]}
-        allProducts.append(results)
-    return jsonify({
-            "success": True,
-            "products": allProducts,
-            "total_products": len(allProducts)
-        }
-    )
+    products = db.session.execute(db.select(ProductsModel)).scalars()
+    results = [
+        {
+            "id": product.id,
+            "categoryId": product.categoryid,
+            "productName": product.productname,
+            "description": product.description,
+            "brandId": product.brandid,
+            "price": product.price,
+            "imageurl": product.imageurl
+        } for product in products]
+    return {"products": results}
 
 @app.route('/getallcategories')
 def getAllCategories():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM Categories")
-    categories = cur.fetchall()
-    cur.close()
-    conn.close()
-    allCategories = []
-    for category in categories:
-        results = {"Id": category[0],
-         "CategoryName": category[1],}
-        allCategories.append(results)
-    return jsonify({
-            "success": True,
-            "categories": allCategories,
-            "total_categories": len(allCategories)
-        }
-    )
+    categories = db.session.execute(db.select(CategoriesModel)).scalars()
+    results = [
+        {
+            "id": category.id,
+            "categoryName": category.categoryname,
+        } for category in categories]
+    return {"categories": results}
 
 @app.route('/getproductsincategory/<int:category_id>')
 def getAllProductsInCategory(category_id):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM Products WHERE CategoryId = (%s)", (category_id,))
-    products = cur.fetchall()
-    cur.close()
-    conn.close()
-    allProducts = []
-    for product in products:
-        results = {"Id": product[0],
-         "CategoryId": product[1],
-         "ProductName": product[2],
-         "Description": product[3],
-         "BrandId": product[4],
-         "Price": product[5],
-         "ImageURL": product[6]}
-        allProducts.append(results)
-    return jsonify({
-            "success": True,
-            "products": allProducts,
-            "total_products": len(allProducts)
-        }
-    )
-
-
+    stmt = db.select(ProductsModel).where(ProductsModel.categoryid == category_id)
+    products = db.session.execute(stmt).scalars()
+    results = [
+        {
+            "id": product.id,
+            "categoryId": product.categoryid,
+            "productName": product.productname,
+            "description": product.description,
+            "brandId": product.brandid,
+            "price": product.price,
+            "imageurl": product.imageurl
+        } for product in products]
+    return {"products": results}
 
 # database models
-
 
 if __name__ == '__main__':
     app.run()
