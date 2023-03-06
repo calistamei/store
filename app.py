@@ -20,7 +20,7 @@ class ProductsModel(db.Model):
     category_id = db.Column(db.ForeignKey("categories.id"), nullable=False)
     product_name = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(200))
-    brand_id = db.Column(db.Integer, nullable=False)
+    brand_id = db.Column(db.ForeignKey("brands.id"), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     image_url = db.Column(db.String)
 
@@ -36,6 +36,7 @@ class BrandsModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     brand_name = db.Column(db.String(50))
+    products = db.relationship('ProductsModel', backref='brand', lazy=True)
 
 class ProductsSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -47,10 +48,16 @@ class CategoriesSchema(ma.SQLAlchemyAutoSchema):
         model = CategoriesModel
         include_fk = True
 
+class BrandsSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = BrandsModel
+        include_fk = True
+
 @app.route('/getallproducts')
 def getAllProducts():
     products = db.session.execute(db.select(ProductsModel)).scalars()
     categories_schema = CategoriesSchema()
+    brands_schema = BrandsSchema()
     results = [
         {
             "id": product.id,
@@ -59,6 +66,7 @@ def getAllProducts():
             "product_name": product.product_name,
             "description": product.description,
             "brand_id": product.brand_id,
+            "brand": brands_schema.dump(product.brand),
             "price": product.price,
             "image_url": product.image_url
         } for product in products]
