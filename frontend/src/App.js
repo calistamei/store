@@ -2,7 +2,8 @@ import React, { useState, useEffect, useContext } from 'react'
 import ProductList from './ProductList'
 import NavBar from './NavBar'
 import Pricing from './Pricing'
-import Brands from './Brands'
+import Brand from './Brand'
+import Category from './Category'
 import { Grid } from '@mui/material'
 import axios from 'axios'
 import { UserContext } from './Contexts/UserContext'
@@ -44,7 +45,8 @@ function App() {
           </Grid>
           <Grid item xs={2}>
             <Pricing />
-            <Brands brands={brands} />
+            <Category categories={categories}/>
+            <Brand brands={brands} />
           </Grid>
           <Grid item xs={10}>
             <ProductList products={category?filteredProducts:products} />
