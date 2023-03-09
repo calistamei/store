@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia'
@@ -6,12 +6,12 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { Container } from '@mui/system';
 
-export default function ProductList({ products }) {
+export default function ProductList({products}) {
   return (
     <Grid container spacing={2}>
       {products.map(p => (
-        <Grid item xs={4} md={3} lg={2} >
-          <Card key={p.id}>
+        <Grid key={p.id} item xs={4} md={3} lg={2} >
+          <Card>
             <Container>
               <CardMedia component="img" image={p.image_url}></CardMedia>
             </Container>
