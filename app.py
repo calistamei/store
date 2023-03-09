@@ -82,6 +82,16 @@ def getAllCategories():
         } for category in categories]
     return {"categories": results}
 
+@app.route('/getallbrands')
+def getAllBrands():
+    brands = db.session.execute(db.select(BrandsModel)).scalars()
+    results = [
+        {
+            "id": brand.id,
+            "brand_name": brand.brand_name,
+        } for brand in brands]
+    return {"brands": results}
+
 @app.route('/getproductsincategory/<int:category_id>')
 def getAllProductsInCategory(category_id):
     stmt = db.select(ProductsModel).where(ProductsModel.category_id == category_id)
