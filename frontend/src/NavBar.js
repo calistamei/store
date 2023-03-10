@@ -7,7 +7,7 @@ import { Button } from '@mui/material';
 import { UserContext } from './Contexts/UserContext';
 
 export default function NavBar({categories}) {
-    const {setCategory} = useContext(UserContext)
+    const {setSelectedCategories} = useContext(UserContext)
 
     return (
     <div>
@@ -15,11 +15,11 @@ export default function NavBar({categories}) {
             <Container>
                 <Toolbar sx={{display:"flex", justifyContent:"center"}}>
                     <Box>
-                        <Button onClick={(e)=>setCategory(0)} sx={{ color: 'white', margin: "0 60px 0 60px"}}>
+                        <Button onClick={(e)=>setSelectedCategories(new Set())} sx={{ color: 'white', margin: "0 60px 0 60px"}}>
                             ALL
                         </Button>
                     {categories.map((c) => (
-                        <Button key={c.id} onClick={(e)=>setCategory(c.id)} sx={{ color: 'white', margin: "0 60px 0 60px"}}>
+                        <Button key={c.id} onClick={(e)=>setSelectedCategories(new Set([c.id]))} sx={{ color: 'white', margin: "0 60px 0 60px"}}>
                             {c.category_name}
                         </Button>
                     ))}

@@ -7,15 +7,21 @@ import Category from './Category'
 import { Grid } from '@mui/material'
 import axios from 'axios'
 import { UserContext } from './Contexts/UserContext'
+import SearchBar from './SearchBar'
 
 function App() {
 
-  const {category} = useContext(UserContext)
+  const {selectedCategories, minPrice, maxPrice} = useContext(UserContext)
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [brands, setBrands] = useState([])
   
+  // let criteria = {}
+  // if (category) {criteria['category'] = category}
+  // if (brands) {criteria['brands'] = brands}
+  // console.log(criteria)
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -33,23 +39,36 @@ function App() {
   })
   };
 
+  function getByPrice() {
+    if (minPrice === undefined) {
+      return products.filter(p=>p.price <= maxPrice)
+    } else if (maxPrice === undefined) {
+      return products.filter(p=>p.price >= minPrice)
+    } else {
+      return products.filter(p=>p.price <= maxPrice && p.price >= minPrice)
+    }
+  }
+
   useEffect(() => {
-    setFilteredProducts((products.filter(p=>p.category_id === category)))
-  }, [category]);
+    if (minPrice || maxPrice) {
+      setFilteredProducts((getByPrice()))
+    } else {
+      setFilteredProducts((products.filter(p=>selectedCategories.has(p.category_id))))
+    }
+  }, [selectedCategories, minPrice, maxPrice]);
 
   return (
       <>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <NavBar categories={categories}/>
-          </Grid>
+        <SearchBar />
+        <NavBar categories={categories}/>
+        <Grid container spacing={2} marginTop="15px">
           <Grid item xs={2}>
             <Pricing />
             <Category categories={categories}/>
             <Brand brands={brands} />
           </Grid>
           <Grid item xs={10}>
-            <ProductList products={category?filteredProducts:products} />
+            <ProductList products={selectedCategories.size !== 0 || minPrice || maxPrice ?filteredProducts:products} />
           </Grid>
         </Grid>
       </>

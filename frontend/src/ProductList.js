@@ -12,11 +12,11 @@ export default function ProductList({products}) {
       {products.map(p => (
         <Grid key={p.id} item xs={4} md={3} lg={2} >
           <Card>
-            <Container>
+            <Container sx={{marginTop:"10px"}}>
               <CardMedia component="img" image={p.image_url}></CardMedia>
             </Container>
             <CardContent>
-              <Typography variant="subtitle2">
+              <Typography sx={{fontWeight:"bold"}}variant="subtitle2">
                 {p.brand.brand_name}
               </Typography>
               <Typography variant="body1">
