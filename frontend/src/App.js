@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useMemo, useState, useEffect, useContext } from 'react'
 import ProductList from './ProductList'
 import NavBar from './NavBar'
 import Pricing from './Pricing'
@@ -11,16 +11,10 @@ import SearchBar from './SearchBar'
 
 function App() {
 
-  const {selectedCategories, minPrice, maxPrice} = useContext(UserContext)
+  const {selectedBrands, selectedCategories, minPrice, maxPrice} = useContext(UserContext)
   const [products, setProducts] = useState([])
-  const [filteredProducts, setFilteredProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [brands, setBrands] = useState([])
-  
-  // let criteria = {}
-  // if (category) {criteria['category'] = category}
-  // if (brands) {criteria['brands'] = brands}
-  // console.log(criteria)
 
   useEffect(() => {
     fetchData();
@@ -28,7 +22,6 @@ function App() {
 
   const fetchData = async () => {
   await axios.get("http://127.0.0.1:5000/getallproducts").then(res => {
-      console.log(res.data.products)
       setProducts(Array.from(res.data.products))
   })
   await axios.get("http://127.0.0.1:5000/getallcategories").then(res => {
@@ -39,23 +32,30 @@ function App() {
   })
   };
 
-  function getByPrice() {
-    if (minPrice === undefined) {
-      return products.filter(p=>p.price <= maxPrice)
-    } else if (maxPrice === undefined) {
-      return products.filter(p=>p.price >= minPrice)
-    } else {
-      return products.filter(p=>p.price <= maxPrice && p.price >= minPrice)
+  const filteredProducts = useMemo(() => {
+    function getByPrice() {
+      if (minPrice === undefined || isNaN(minPrice)) {
+        return products.filter(p=>parseFloat(p.price.substring(1)) <= maxPrice)
+      } else if (maxPrice === undefined || isNaN(maxPrice)) {
+        return products.filter(p=>parseFloat(p.price.substring(1)) >= minPrice)
+      } else {
+        return products.filter(p=>parseFloat(p.price.substring(1)) <= maxPrice && parseFloat(p.price.substring(1)) >= minPrice)
+      }
     }
-  }
 
-  useEffect(() => {
+    let criteria = {}
+    if (selectedCategories.size > 0) {criteria['category_id'] = selectedCategories}
+    if (selectedBrands.size > 0) {criteria['brand_id'] = selectedBrands}
+
     if (minPrice || maxPrice) {
-      setFilteredProducts((getByPrice()))
+      console.log(getByPrice().filter(p=> Object.keys(criteria).every(key=>criteria[key].has(p[key]))))
+      return getByPrice().filter(p=> Object.keys(criteria).every(key=>criteria[key].has(p[key])))
+    } else if (selectedCategories.size === 0 && selectedBrands.size === 0) {
+      return getByPrice()
     } else {
-      setFilteredProducts((products.filter(p=>selectedCategories.has(p.category_id))))
+      return products.filter(p=> Object.keys(criteria).every(key=>criteria[key].has(p[key])))
     }
-  }, [selectedCategories, minPrice, maxPrice]);
+  }, [products, selectedBrands, selectedCategories, minPrice, maxPrice]);
 
   return (
       <>
@@ -68,7 +68,7 @@ function App() {
             <Brand brands={brands} />
           </Grid>
           <Grid item xs={10}>
-            <ProductList products={selectedCategories.size !== 0 || minPrice || maxPrice ?filteredProducts:products} />
+            <ProductList products={selectedBrands.size !==0 || selectedCategories.size !== 0 || minPrice || maxPrice ?filteredProducts:products} />
           </Grid>
         </Grid>
       </>

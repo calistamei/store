@@ -24,7 +24,7 @@ export default function Category({categories}) {
         <Box marginLeft="15px">
           <FormGroup>
               {categories.map(c=>
-              <FormControlLabel key={c.id} control={<Checkbox onChange={(e) => handleCheckbox(e, c.id)}/>} label={<Typography variant="body2">{c.category_name}</Typography>} />
+              <FormControlLabel key={c.id} control={<Checkbox color="default" checked={selectedCategories.has(c.id)?true:false} onChange={(e) => handleCheckbox(e, c.id)}/>} label={<Typography variant="body2">{c.category_name}</Typography>} />
               )}
           </FormGroup>
         </Box>
