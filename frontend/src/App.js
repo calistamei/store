@@ -11,7 +11,7 @@ import SearchBar from './SearchBar'
 
 function App() {
 
-  const {selectedBrands, selectedCategories, minPrice, maxPrice} = useContext(UserContext)
+  const {selectedBrands, selectedCategories, minPrice, maxPrice, search} = useContext(UserContext)
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [brands, setBrands] = useState([])
@@ -46,16 +46,20 @@ function App() {
     let criteria = {}
     if (selectedCategories.size > 0) {criteria['category_id'] = selectedCategories}
     if (selectedBrands.size > 0) {criteria['brand_id'] = selectedBrands}
+    if (search) {criteria['search'] = search}
+
 
     if (minPrice || maxPrice) {
-      console.log(getByPrice().filter(p=> Object.keys(criteria).every(key=>criteria[key].has(p[key]))))
-      return getByPrice().filter(p=> Object.keys(criteria).every(key=>criteria[key].has(p[key])))
+      return getByPrice().filter(p=> Object.keys(criteria).every(key=>key==='search'? p.brand.brand_name.toLowerCase().includes(search.toLowerCase())
+      || p.product_name.toLowerCase().includes(search.toLowerCase()) :criteria[key].has(p[key])))
     } else if (selectedCategories.size === 0 && selectedBrands.size === 0) {
-      return getByPrice()
+      return products.filter(p=> Object.keys(criteria).every(key=>key==='search'? p.brand.brand_name.toLowerCase().includes(search.toLowerCase())
+      || p.product_name.toLowerCase().includes(search.toLowerCase()) :criteria[key].has(p[key])))
     } else {
-      return products.filter(p=> Object.keys(criteria).every(key=>criteria[key].has(p[key])))
-    }
-  }, [products, selectedBrands, selectedCategories, minPrice, maxPrice]);
+      return products.filter(p=> Object.keys(criteria).every(key=>key==='search'? p.brand.brand_name.toLowerCase().includes(search.toLowerCase())
+      || p.product_name.toLowerCase().includes(search.toLowerCase()) :criteria[key].has(p[key])))
+    } 
+  }, [products, selectedBrands, selectedCategories, minPrice, maxPrice, search]);
 
   return (
       <>
@@ -68,7 +72,7 @@ function App() {
             <Brand brands={brands} />
           </Grid>
           <Grid item xs={10}>
-            <ProductList products={selectedBrands.size !==0 || selectedCategories.size !== 0 || minPrice || maxPrice ?filteredProducts:products} />
+            <ProductList products={selectedBrands.size !==0 || selectedCategories.size !== 0 || minPrice || maxPrice || search?filteredProducts:products} />
           </Grid>
         </Grid>
       </>
