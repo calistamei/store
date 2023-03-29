@@ -5,7 +5,7 @@ import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { UserContext } from './Contexts/UserContext';
+import { UserContext } from '../Contexts/UserContext';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',

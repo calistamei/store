@@ -1,13 +1,13 @@
 import React, { useMemo, useState, useEffect, useContext } from 'react'
-import ProductList from './ProductList'
-import NavBar from './NavBar'
-import Pricing from './Pricing'
-import Brand from './Brand'
-import Category from './Category'
+import ProductList from './Components/ProductList'
+import NavBar from './Components/NavBar'
+import Pricing from './Components/Pricing'
+import Brand from './Components/Brand'
+import Category from './Components/Category'
 import { Grid } from '@mui/material'
 import axios from 'axios'
 import { UserContext } from './Contexts/UserContext'
-import SearchBar from './SearchBar'
+import SearchBar from './Components/SearchBar'
 
 function App() {
 

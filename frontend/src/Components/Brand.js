@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, FormGroup, FormControlLabel, Checkbox, Typography } from '@mui/material'
-import { UserContext } from './Contexts/UserContext'
+import { UserContext } from '../Contexts/UserContext'
 import { useContext } from 'react'
 
 export default function Brand({brands}) {

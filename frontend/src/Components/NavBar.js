@@ -4,7 +4,7 @@ import { Toolbar } from '@mui/material';
 import { Box } from '@mui/material';
 import { Container } from '@mui/material';
 import { Button } from '@mui/material';
-import { UserContext } from './Contexts/UserContext';
+import { UserContext } from '../Contexts/UserContext';
 
 export default function NavBar({categories}) {
     const {setSelectedCategories} = useContext(UserContext)

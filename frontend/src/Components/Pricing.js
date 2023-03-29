@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { Stack, TextField } from '@mui/material'
 import { InputAdornment, Typography } from '@mui/material'
-import { UserContext } from './Contexts/UserContext'
+import { UserContext } from '../Contexts/UserContext'
 
 export default function Pricing() {
   const {setMinPrice, setMaxPrice} = useContext(UserContext)
