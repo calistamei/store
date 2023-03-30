@@ -13,6 +13,17 @@ export default function CartDialog(props) {
     };
     const cart = useSelector((state) => state.cart)
 
+    const getTotal = () => {
+        let totalQuantity = 0
+        let totalPrice = 0
+        cart.forEach(item => {
+          totalQuantity += item.quantity
+          console.log(typeof(item.price))
+          totalPrice += parseInt(item.price.slice(1)) * item.quantity
+        })
+        return {totalPrice, totalQuantity}
+    }
+      
   return (
     <Dialog fullwidth="true" maxWidth="md" onClose={handleClose} open={openCart} style={{ maxWidth: "100%", maxHeight: "100%" }}>
         <DialogTitle>
@@ -49,6 +60,17 @@ export default function CartDialog(props) {
                 </Stack>
             </Box>
         ))}
+        {getTotal().totalQuantity?
+        <Stack direction='column' sx={{alignItems:'flex-end'}}>
+            <Typography>
+                Total ({getTotal().totalQuantity} items): ${getTotal().totalPrice}
+            </Typography>
+            <Button sx={{marginTop:'15px', minWidth: 50, maxWidth:150, height: 50, backgroundColor:'black'}} variant="contained">Checkout</Button>
+        </Stack> : 
+        <Typography>
+            Cart is empty.
+        </Typography>
+        }
         </DialogContent>
         </Dialog>
   )

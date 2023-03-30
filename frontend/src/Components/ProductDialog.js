@@ -59,7 +59,7 @@ export default function ProductDialog(props) {
                                 <MenuItem value={5}>5</MenuItem>
                                 </Select>
                             </FormControl>
-                            <Button onClick={onClick} sx={{ m: 1, minWidth: 120, maxWidth:150, height:56 }} variant="outlined">Add to Cart</Button>
+                            <Button onClick={onClick} sx={{ m: 1, minWidth: 120, maxWidth:150, height:56, backgroundColor:'black' }} variant="contained">Add to Cart</Button>
                         </Stack>
                     </Stack>
                 </Stack>
