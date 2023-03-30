@@ -1,11 +1,14 @@
 import { Box, AppBar, Toolbar, Typography, IconButton} from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { UserContext } from '../Contexts/UserContext';
+import { useSelector } from 'react-redux';
+import Badge from '@mui/material/Badge';
+import CartDialog from './CartDialog';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -33,7 +36,26 @@ const Search = styled('div')(({ theme }) => ({
 
 export default function SearchBar() {
     const {setSearch} = useContext(UserContext)
+    const cart = useSelector((state) => state.cart)
+
+    const getTotalQuantity = () => {
+      let total = 0
+      cart.forEach(item => {
+        total += item.quantity
+      })
+      return total
+    }
+
+    const [openCart, setOpenCart] = useState(false)
+    const handleClickCart = () => {
+      setOpenCart(true)
+    };
+    const handleCloseCart = () => {
+      setOpenCart(false);
+    };
+
     return (
+      <>
         <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static" sx={{ backgroundColor: "white", color:"black"}}>
         <Toolbar>
@@ -57,9 +79,11 @@ export default function SearchBar() {
             />
             </Search>
             <Box sx={{ flexGrow: 1 }} />
-            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                <ShoppingCartIcon />
+            <Box sx={{ display: { md: 'flex' } }}>
+            <IconButton onClick={() => handleClickCart()} size="large" aria-label="cart" color="inherit">
+                <Badge badgeContent={getTotalQuantity()}>
+                  <ShoppingCartIcon />
+                </Badge>
             </IconButton>
             <IconButton
                 size="large"
@@ -73,6 +97,8 @@ export default function SearchBar() {
             </Box>
         </Toolbar>
         </AppBar>
-    </Box>
+      </Box>
+      <CartDialog openCart={openCart} onClose={handleCloseCart}/>
+      </>
     )
 }

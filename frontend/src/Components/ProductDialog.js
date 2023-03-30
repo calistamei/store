@@ -8,6 +8,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { useDispatch } from 'react-redux';
+import {addToCart} from '../redux/cartSlice';
 
 export default function ProductDialog(props) {
     const { onClose, open, product } = props;
@@ -16,6 +18,19 @@ export default function ProductDialog(props) {
       onClose();
     };
     const [quantity, setQuantity] = React.useState('');
+    
+    const dispatch = useDispatch()
+    const onClick = () => {
+        for (let i = 0; i < quantity; i++) {
+            let id = product.id
+            let pname = product.product_name
+            let img = product.image_url
+            let price = product.price
+            let brand = product.brand.brand_name
+            dispatch(addToCart({id, pname, img, price, brand}))
+        }
+        setQuantity('');
+    }
 
     if (product) {
         return (
@@ -44,7 +59,7 @@ export default function ProductDialog(props) {
                                 <MenuItem value={5}>5</MenuItem>
                                 </Select>
                             </FormControl>
-                            <Button sx={{ m: 1, minWidth: 120, maxWidth:150, height:56 }} variant="outlined">Add to Cart</Button>
+                            <Button onClick={onClick} sx={{ m: 1, minWidth: 120, maxWidth:150, height:56 }} variant="outlined">Add to Cart</Button>
                         </Stack>
                     </Stack>
                 </Stack>
