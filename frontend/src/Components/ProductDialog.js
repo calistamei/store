@@ -30,6 +30,7 @@ export default function ProductDialog(props) {
             dispatch(addToCart({id, pname, img, price, brand}))
         }
         setQuantity('');
+        onClose();
     }
 
     if (product) {

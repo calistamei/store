@@ -65,7 +65,7 @@ export default function SearchBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
             >
-            LOGO
+            MKSTORE
             </Typography>
             <Box sx={{ flexGrow: 1 }} />
             <Search>
