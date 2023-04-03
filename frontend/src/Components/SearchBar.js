@@ -84,14 +84,6 @@ export default function SearchBar() {
                   <ShoppingCartIcon />
                 </Badge>
             </IconButton>
-            <IconButton
-                size="large"
-                edge="end"
-                aria-label="account of current user"
-                aria-haspopup="true"
-                color="inherit"
-            >
-            </IconButton>
             </Box>
         </Toolbar>
         </AppBar>

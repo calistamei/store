@@ -21,16 +21,18 @@ export default function ProductDialog(props) {
     
     const dispatch = useDispatch()
     const onClick = () => {
-        for (let i = 0; i < quantity; i++) {
-            let id = product.id
-            let pname = product.product_name
-            let img = product.image_url
-            let price = product.price
-            let brand = product.brand.brand_name
-            dispatch(addToCart({id, pname, img, price, brand}))
+        if (quantity) {
+            for (let i = 0; i < quantity; i++) {
+                let id = product.id
+                let pname = product.product_name
+                let img = product.image_url
+                let price = product.price
+                let brand = product.brand.brand_name
+                dispatch(addToCart({id, pname, img, price, brand}))
+            }
+            setQuantity('');
+            onClose();
         }
-        setQuantity('');
-        onClose();
     }
 
     if (product) {

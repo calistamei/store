@@ -3,6 +3,8 @@ import React from 'react'
 import { useSelector } from 'react-redux';
 import { decrementQuantity, incrementQuantity, removeItem } from '../redux/cartSlice';
 import { useDispatch } from 'react-redux';
+import { useState } from 'react';
+import CheckoutDialog from './CheckoutDialog';
 
 export default function CartDialog(props) {
     const dispatch = useDispatch()
@@ -18,13 +20,22 @@ export default function CartDialog(props) {
         let totalPrice = 0
         cart.forEach(item => {
           totalQuantity += item.quantity
-          console.log(typeof(item.price))
           totalPrice += parseInt(item.price.slice(1)) * item.quantity
         })
         return {totalPrice, totalQuantity}
     }
+
+    const [openCheckout, setOpenCheckout] = useState(false)
+    const handleClickCheckout = () => {
+      setOpenCheckout(true)
+      onClose()
+    };
+    const handleCloseCheckout = () => {
+      setOpenCheckout(false);
+    };
       
   return (
+    <>
     <Dialog fullwidth="true" maxWidth="md" onClose={handleClose} open={openCart} style={{ maxWidth: "100%", maxHeight: "100%" }}>
         <DialogTitle>
             Shopping Cart
@@ -65,13 +76,15 @@ export default function CartDialog(props) {
             <Typography>
                 Total ({getTotal().totalQuantity} items): ${getTotal().totalPrice}
             </Typography>
-            <Button sx={{marginTop:'15px', minWidth: 50, maxWidth:150, height: 50, backgroundColor:'black'}} variant="contained">Checkout</Button>
+            <Button onClick={() => handleClickCheckout()} sx={{marginTop:'15px', minWidth: 50, maxWidth:150, height: 50, backgroundColor:'black'}} variant="contained">Checkout</Button>
         </Stack> : 
         <Typography>
             Cart is empty.
         </Typography>
         }
         </DialogContent>
-        </Dialog>
+    </Dialog>
+    <CheckoutDialog openCheckout={openCheckout} onClose={handleCloseCheckout}/>
+    </>
   )
 }
