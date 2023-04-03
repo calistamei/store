@@ -1,6 +1,5 @@
 import { Box, AppBar, Toolbar, Typography, IconButton} from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import React, { useContext, useState } from 'react'
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
@@ -92,7 +91,6 @@ export default function SearchBar() {
                 aria-haspopup="true"
                 color="inherit"
             >
-                <AccountCircle />
             </IconButton>
             </Box>
         </Toolbar>
